@@ -1,0 +1,79 @@
+<div class="searchBox float-right">
+	Search: <input ng-model="query">
+	<a href="#addPlayerDialog" data-toggle="modal" class="btn btn-primary">Add Player</a>
+</div>
+<h1>{{title}}</h1>
+<div>
+	<table class="table">
+		<thead class="center">
+			<tr>
+				<th ng-click="predicate='fname'; reverse=!reverse">Player:</th>
+				<th ng-click="predicate='rating'; reverse=!reverse">Rating</th>
+				<th ng-click="predicate='matchesPlayed'; reverse=!reverse">Games Played</th>
+				<th ng-click="predicate='wins'; reverse=!reverse">Wins</th>
+				<th ng-click="predicate='losses'; reverse=!reverse">Losses</th>
+				<th ng-click="predicate='ratio'; reverse=!reverse">Win %</th>
+				<th ng-click="predicate='streak'; reverse=!reverse">Streak</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="player in players | filter:query | orderBy:predicate:reverse " class="center">
+				<td><img ng-src="{{player.gravatar + '&s=20'}}" class="pull-left"><a href="#/players/{{player._id}}">{{player.fname}} "{{player.nickname}}" {{player.lname}}</a> </td>
+				<td>{{player.rating}}</td>
+				<td>{{player.matchesPlayed}}</td>
+				<td>{{player.wins}}</td>
+				<td>{{player.losses}}</td>
+				<td>{{player.ratio}}%</td>
+				<td>{{player.currentStreak}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<hr>
+
+</div>
+
+
+<div id="addPlayerDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Add Game" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="editPlayerDialogLabel">Add a new player</h3>
+	</div>
+	<div class="modal-body">
+		<form class='form-horizontal'>
+			<div class='control-group'>
+				<label class='control-label' for='firstName'>First Name</label>
+				<div class='controls'>
+					<input type="text" name="firstName" ng-model='form.firstName' id='fistName'>
+				</div>
+			</div>
+			<div class='control-group'>
+				<label class='control-label' for='nickname'>Nickname</label>
+				<div class='controls'>
+					<input type="text" name="nickname" ng-model='form.nickname' id='nickname'>
+				</div>
+			</div>
+			<div class='control-group'>
+				<label class='control-label' for='lastName'>Last Name</label>
+				<div class='controls'>
+					<input type="text" name="lastName" ng-model='form.lastName' id='lastName'>
+				</div>
+			</div>
+			<div class='control-group'>
+				<label class='control-label' for='email'>Email</label>
+				<div class='controls'>
+					<input type="text" name="email" ng-model="form.email">
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button ng-click='addPlayer()' ng-disabled="addMatchForm.$invalid || isUnchanged(addMatchForm)" data-dismiss="modal" class="btn btn-primary">Add Player</button>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#addPlayerDialog').on('shown', function () {
+		$('input:visible:first', this).focus();
+	});
+</script>

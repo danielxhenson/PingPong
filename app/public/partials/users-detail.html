@@ -1,0 +1,150 @@
+<div class="row">
+	<div class="span4">
+		<div class="userImageWrapper">
+			<img src="/images/PingPongPlaceholder4.jpg" alt="" height="200px"/>
+		</div>
+	</div>
+	<div class="span8">
+		<div class="float-right">
+			<ul class="list-style-none">
+				<li>
+					<a href="" ng-click="showEditPlayer()"><i class="icon-edit"></i> Edit</a>
+				</li>
+				<li ng-click="showRemovePlayer()"><a href="" ><i class="icon-remove"></i> Delete!</a></li>
+			</ul>
+		</div>
+		<div>
+			<div>
+				<img ng-src="{{userData.gravatar + '&s=50'}}" class="pull-left" style="padding: 0 20px 10px 10px">
+				<h3>{{userData.fname}} "{{userData.nickname}}" {{userData.lname}}</h3>
+			</div>
+			
+			<table class="table">
+				<tbody>
+					<tr>
+						<th>Matches Played:</th>
+						<td>{{userData.matchesPlayed}}</td>
+					</tr>
+					<tr>
+						<th>Wins</th>
+						<td>{{userData.wins}}</td>
+					</tr>
+					<tr>
+						<th>Losses</th>
+						<td>{{userData.losses}}</td>
+					</tr>
+					<tr>
+						<th>Win %</th>
+						<td>{{userData.ratio}}%</td>
+					</tr>
+					<tr>
+						<th>Streak</th>
+						<td>{{userData.currentStreak}}</td>
+					</tr>
+	
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<h3>Player's Recent Matches ({{matchData.length}})</h3>
+	<ul style="margin:0; list-style: none;">
+		<li ng-repeat="match in matchData | filter:query | orderBy:predicate" class="{{match.ratingChange | WinLoss}}">
+			<div class="well row" style="padding-bottom: 20px;">
+				<div class="span4 offset1 winner">
+					<div class="pull-left">
+						<img ng-src="{{match.winner.gravatar + '&s=125'}}">
+					</div>
+					<div class="center">
+						<a href="#/players/{{match.winner._id}}">
+							{{match.winner.fname}} "{{match.winner.nickname}}" {{match.winner.lname}}
+						</a>
+						<br>
+						{{ match.winnerRating }} ({{match.ratingChange}})
+						<div ng-repeat="game in match.games | filter:query | orderBy:orderProp">
+							<div><span class="badge {{badgeColor(game.winnerScore, game.loserScore)}}">{{game.winnerScore}}</span></div>
+						</div>
+					</div>
+				</div>
+				<div class="span2 center">
+					<a href="#/matches/{{match._id}}">{{ match.createdDate | date:'MM/dd/yyyy h:mm'}}</a>
+					<br /><br />
+					<div ng-repeat="game in match.games | filter:query | orderBy:orderProp" class="row">
+						<div>GAME {{ $index +1 }}</div>
+					</div>
+				</div>
+				<div class="span4 loser">
+					<div class="pull-right">
+						<img ng-src="{{match.loser.gravatar + '&s=125'}}">
+					</div>
+					<div class="center">
+						<a href="#/players/{{match.loser._id}}">
+							{{match.loser.fname}} "{{match.loser.nickname}}" {{match.loser.lname}}
+						</a>
+						<br>
+						{{ match.loserRating }} ({{-match.ratingChange}})
+						<div ng-repeat="game in match.games | filter:query | orderBy:orderProp">
+							<div><span class="badge {{badgeColor(game.loserScore, game.winnerScore)}}">{{game.loserScore}}</span></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ul>
+
+</div>
+
+<div id="removePlayerConfirmation" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="removePlayerConfirmationLabel">Remove Player</h3>
+	</div>
+	<div class="modal-body">
+		<p>Are you sure you wish to remove {{userData.fname}} "{{userData.nickname}}" {{userData.lname}} ?</p>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button ng-click="deletePlayer()" class="btn btn-primary">Yes, remove.</button>
+	</div>
+</div>
+
+<div id="editPlayerDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="editPlayerDialogLabel">Edit Player</h3>
+	</div>
+	<div class="modal-body">
+		<form class="form-horizontal">
+			<div class="control-group">
+				<label class="control-label" for="inputFirstName">FirstName</label>
+				<div class="controls">
+					<input type="text" id="inputFirstName" ng-model='user.fname' placeholder="First Name" value="{{userData.fname}}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputNickName">NickName</label>
+				<div class="controls">
+					<input type="text" id="inputNickName" ng-model='user.nickname'  placeholder="Nick Name" value="{{userData.nickname}}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputLastName">LastName</label>
+				<div class="controls">
+					<input type="text" id="inputLastName" ng-model='user.lname' placeholder="Last Name" value="{{userData.lname}}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputEmail">Email</label>
+				<div class="controls">
+					<input type="text" id="inputEmail" ng-model='user.email' placeholder="Test@gmail.com" value="{{userData.email}}">
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button ng-click="editPlayer(user)" class="btn btn-primary">Update Player</button>
+	</div>
+</div>
