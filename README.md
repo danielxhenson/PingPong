@@ -2,6 +2,8 @@ PingPong
 ========
 A simple web app for Ping Pong scores. This is a work in progress.
 
+[![Build Status](https://travis-ci.org/jshemas/PingPong.png?branch=master)](https://travis-ci.org/jshemas/PingPong)
+
 ### Installation
 This was build using Node.js(v0.10.10) and MongoDB(v2.4.4).
 
